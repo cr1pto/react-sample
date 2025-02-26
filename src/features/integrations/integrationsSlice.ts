@@ -1,9 +1,9 @@
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { createAppSlice } from "../../app/createAppSlice"
-import { fetchIntegrations } from "./integrationsAPI"
+import { fetchIntegrations, setIntegrationToInactive } from "./integrationsAPI"
 
 export type IntegrationMetadata = {
-  id: string
+  id: number
   name: string
   description: string
   url: string
@@ -37,12 +37,31 @@ export const integrationsSlice = createAppSlice({
     // will call the thunk with the `dispatch` function as the first argument. Async
     // code can then be executed and other actions can be dispatched. Thunks are
     // typically used to make async requests.
+    setIntegrationToInactiveAsync: create.asyncThunk(
+      async (id: number) => {
+        const response = await setIntegrationToInactive(id)
+
+        return response
+      },
+      {
+        pending: state => {
+          state.status = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.status = "idle"
+          state.value = action.payload
+        },
+        rejected: state => {
+          state.status = "failed"
+        },
+      },
+    ),
     getIntegrationsAsync: create.asyncThunk(
       async () => {
         const response = await fetchIntegrations()
         console.log("🚀 ~ response:", response)
         // The value we return becomes the `fulfilled` action payload
-        return response.data
+        return response
       },
       {
         pending: state => {
@@ -67,8 +86,11 @@ export const integrationsSlice = createAppSlice({
 })
 
 // Action creators are generated for each case reducer function.
-export const { updateMetadata, getIntegrationsAsync } =
-  integrationsSlice.actions
+export const {
+  updateMetadata,
+  getIntegrationsAsync,
+  setIntegrationToInactiveAsync,
+} = integrationsSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.
 export const { selectIntegrations } = integrationsSlice.selectors

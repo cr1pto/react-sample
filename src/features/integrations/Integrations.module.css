@@ -37,6 +37,18 @@
   transition: all 0.15s;
 }
 
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: gray;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  color: white;
+  margin: 16px;
+  /* width: 400px; */
+}
+
 .textbox {
   font-size: 32px;
   padding: 2px;
