@@ -63,6 +63,15 @@ button > ::content {
   transition: all 0.15s;
 }
 
+.input {
+  font-size: 1rem;
+  padding: 2px;
+  width: 175px;
+  height: 30px;
+  text-align: center;
+  margin-right: 4px;
+}
+
 .card {
   display: flex;
   flex-direction: column;
@@ -116,4 +125,11 @@ button > ::content {
   width: 0%;
   opacity: 1;
   transition: 0s;
+}
+
+hr {
+  width: 100%;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin: 16px 0;
 }

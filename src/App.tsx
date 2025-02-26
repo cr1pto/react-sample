@@ -9,14 +9,16 @@ const App = () => {
     <div className="App">
       <header className="App-header">
         <nav>
-          <NavLink to="/counter">Counter</NavLink>
-          <NavLink to="/quotes">Quotes</NavLink>
+          {/* <NavLink to="/counter">Counter</NavLink>
+          <NavLink to="/quotes">Quotes</NavLink> */}
+          <NavLink to="/">Home</NavLink>
           <NavLink to="/integrations">Integrations</NavLink>
         </nav>
         <Routes>
           <Route path="counter" element={<Counter />} />
           <Route path="quotes" element={<Quotes />} />
           <Route path="integrations" element={<Integrations />} />
+          <Route path="" element={<Integrations />} />
         </Routes>
         <div>
           <Outlet />

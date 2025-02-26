@@ -1,3 +1,4 @@
+import type { ChangeEvent, MouseEventHandler } from "react"
 import { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { v4 as uuidv4 } from "uuid"
@@ -13,18 +14,16 @@ export const Integrations = () => {
   const dispatch = useAppDispatch()
   const integrations = useAppSelector(selectIntegrations)
   const [integrationResults, setIntegrationResults] = useState([])
-  // console.log("🚀 ~ Integrations ~ integrations:", integrations)
+  const [filteredIntegrations, setFilteredIntegrations] = useState([])
+  const [searchTerm, setSearchTerm] = useState("")
 
-  function getFilteredIntegrations() {
-    dispatch(getIntegrationsAsync()).then(res => {
-      console.log("🚀 ~ dispatch ~ res:", res)
-      setIntegrationResults(res.payload)
-    })
+  async function getFilteredIntegrations() {
+    const response = await dispatch(getIntegrationsAsync())
+    setIntegrationResults(response.payload)
   }
-  function processInactive(id: number) {
-    dispatch(setIntegrationToInactiveAsync(id)).then(res => {
-      getFilteredIntegrations()
-    })
+  async function processInactive(id: number) {
+    await dispatch(setIntegrationToInactiveAsync(id))
+    getFilteredIntegrations()
   }
   useEffect(() => {
     getFilteredIntegrations()
@@ -35,17 +34,53 @@ export const Integrations = () => {
     }
   }, [dispatch])
 
+  async function handleOnChange(event: ChangeEvent<HTMLInputElement>) {
+    setSearchTerm(event.target.value)
+    setTimeout(() => {
+      console.log("🚀 ~ e.key:", searchTerm)
+    }, 500)
+    // getFilteredIntegrations()
+  }
+
+  async function handleClickFilter(
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) {
+    console.log("🚀 ~ Integrations ~ event:", event)
+  }
+
   return (
     <div className={styles.container}>
       <h1>Integrations</h1>
       <div className={styles.row}>
-        <div>Test</div>
+        <div>
+          <h2>Search for an integration</h2>
+          <div>
+            <input
+              className={styles.input}
+              type="text"
+              placeholder="Search..."
+              aria-label="Search for an integration"
+              value={searchTerm}
+              onChange={handleOnChange}
+            />
+          </div>
+        </div>
       </div>
       <div className={styles.row}>
         <button
           className={styles.button}
           aria-label="Get Integrations"
-          onClick={() => getFilteredIntegrations()}
+          onClick={getFilteredIntegrations}
+        >
+          Refresh Integrations
+        </button>
+      </div>
+      <hr />
+      <div className={styles.row}>
+        <button
+          className={styles.button}
+          aria-label="Filter Integrations"
+          onClick={e => handleClickFilter(e)}
         >
           Click to load integrations
         </button>
@@ -59,7 +94,10 @@ export const Integrations = () => {
               <a href={integration.url} target="_blank" rel="noreferrer">
                 {integration.url}
               </a>
-              <button className={styles.button} onClick={() => processInactive(integration.id)}>
+              <button
+                className={styles.button}
+                onClick={() => processInactive(integration.id)}
+              >
                 Set Inactive
               </button>
             </div>
