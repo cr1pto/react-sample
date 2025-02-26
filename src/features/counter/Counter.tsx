@@ -2,6 +2,7 @@ import { useState } from "react"
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import styles from "./Counter.module.css"
+import logo from "../../logo.svg"
 import {
   decrement,
   increment,
@@ -22,6 +23,8 @@ export const Counter = () => {
 
   return (
     <div>
+      <img src={logo} className="App-logo" alt="logo" />
+      <p>Sample application for React.</p>
       <div className={styles.row}>
         <button
           className={styles.button}
