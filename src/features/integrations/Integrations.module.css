@@ -1,12 +1,35 @@
-.row {
+.container {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+}
+
+.column {
+  display: block;
+  align-items: start;
+  width: 100%;
+  min-width: 1200px;
+  height: 100%;
+  min-height: 1200px;
+}
+.row {
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
+  display: inline-block;
+}
+
+button {
+  height: 3rem;
+  width: 8rem;
+}
+
+button > ::content {
+  font-size: 1rem;
 }
 
 .row > button {
-  margin-left: 4px;
-  margin-right: 8px;
+  margin: 0.5rem;
 }
 
 .row:not(:last-child) {
@@ -24,15 +47,18 @@
 .button {
   appearance: none;
   background: none;
-  font-size: 32px;
+  font-size: 1rem;
+  width: 200px;
+  height: 50px;
   padding-left: 12px;
   padding-right: 12px;
+  margin: 2px;
   outline: none;
   border: 2px solid transparent;
-  color: rgb(112, 76, 182);
+  color: rgb(0, 0, 0);
   padding-bottom: 4px;
   cursor: pointer;
-  background-color: rgba(112, 76, 182, 0.1);
+  background-color: rgba(50, 76, 150, 0.1);
   border-radius: 2px;
   transition: all 0.15s;
 }
