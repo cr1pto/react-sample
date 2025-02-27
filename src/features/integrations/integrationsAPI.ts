@@ -12,6 +12,17 @@ export const fetchIntegrations = () => {
   //   setTimeout(() => resolve({ data: integrations }), 500),
   // )
 }
+export const fetchIntegrationById = (id: number) => {
+  return fetch("http://localhost:8080/integrations/" + id)
+    .then(res => res.json())
+    .catch(err => {
+      console.error(err)
+      return { data: undefined }
+    })
+  // return new Promise<{ data: IntegrationMetadata[] }>(resolve =>
+  //   setTimeout(() => resolve({ data: integrations }), 500),
+  // )
+}
 
 export const addIntegration = (integration: IntegrationMetadata) => {
   return fetch("http://localhost:8080/integrations", {
@@ -28,9 +39,9 @@ export const addIntegration = (integration: IntegrationMetadata) => {
     })
 }
 
-export const setIntegrationToInactive = (id: number) => {
+export const toggleActiveStatus = (id: number, active: boolean) => {
   return fetch(
-    `http://localhost:8080/integrations/${id}/active?state=${false}`,
+    `http://localhost:8080/integrations/${id}/active?state=${active}`,
     {
       method: "PUT",
       headers: {
@@ -40,6 +51,25 @@ export const setIntegrationToInactive = (id: number) => {
     },
   )
     .then(res => res.json())
+    .catch(err => {
+      console.error(err)
+      return { data: [] }
+    })
+}
+export const filterIntegrationByName = (name: string) => {
+  return fetch(
+    `http://localhost:8080/searchIntegrations?descriptionText=${name}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  )
+    .then(res => {
+      console.log("🚀 ~ filterIntegrationByName ~ res:", res)
+      return res.json()
+    })
     .catch(err => {
       console.error(err)
       return { data: [] }

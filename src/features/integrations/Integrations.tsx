@@ -1,13 +1,15 @@
-import type { ChangeEvent, MouseEventHandler } from "react"
+import type { ChangeEvent } from "react"
 import { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { v4 as uuidv4 } from "uuid"
 import styles from "./Integrations.module.css"
 import type { IntegrationMetadata } from "./integrationsSlice"
 import {
+  filterByName,
   getIntegrationsAsync,
   selectIntegrations,
-  setIntegrationToInactiveAsync,
+  toggleActiveStatusAsync,
+  updateMetadata,
 } from "./integrationsSlice"
 
 export const Integrations = () => {
@@ -15,16 +17,9 @@ export const Integrations = () => {
   const integrations = useAppSelector(selectIntegrations)
   const [integrationResults, setIntegrationResults] = useState([])
   const [filteredIntegrations, setFilteredIntegrations] = useState([])
+  const [isSearchDisabled, setIsSearchDisabled] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
 
-  async function getFilteredIntegrations() {
-    const response = await dispatch(getIntegrationsAsync())
-    setIntegrationResults(response.payload)
-  }
-  async function processInactive(id: number) {
-    await dispatch(setIntegrationToInactiveAsync(id))
-    getFilteredIntegrations()
-  }
   useEffect(() => {
     getFilteredIntegrations()
     let done = false
@@ -34,18 +29,39 @@ export const Integrations = () => {
     }
   }, [dispatch])
 
+  async function getFilteredIntegrations() {
+    const response = await dispatch(getIntegrationsAsync())
+    setIntegrationResults(response.payload)
+  }
+  async function toggleActive(id: number) {
+    const response = await dispatch(toggleActiveStatusAsync(id))
+    console.log("🚀 ~ processInactive ~ response:", response)
+    await getFilteredIntegrations()
+    // updateMetadata(response.payload)
+    // setFilteredIntegrations(response.payload)
+  }
+
   async function handleOnChange(event: ChangeEvent<HTMLInputElement>) {
     setSearchTerm(event.target.value)
     setTimeout(() => {
-      console.log("🚀 ~ e.key:", searchTerm)
-    }, 500)
-    // getFilteredIntegrations()
+      setIsSearchDisabled(searchTerm?.trim().length < 1)
+      // console.log("🚀 ~ e.key:", searchTerm)
+    }, 250)
   }
 
   async function handleClickFilter(
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
   ) {
-    console.log("🚀 ~ Integrations ~ event:", event)
+    const response = await dispatch(filterByName(searchTerm))
+    console.log("🚀 ~ Integrations ~ response:", response)
+    updateMetadata(response.payload)
+    setFilteredIntegrations(response.payload)
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Enter") {
+      handleClickFilter(null)
+    }
   }
 
   return (
@@ -58,9 +74,10 @@ export const Integrations = () => {
             <input
               className={styles.input}
               type="text"
-              placeholder="Search..."
+              placeholder="Search for integration..."
               aria-label="Search for an integration"
               value={searchTerm}
+              onKeyDown={e => handleKeyDown(e)}
               onChange={handleOnChange}
             />
           </div>
@@ -68,21 +85,50 @@ export const Integrations = () => {
       </div>
       <div className={styles.row}>
         <button
-          className={styles.button}
+          disabled={isSearchDisabled}
+          className={isSearchDisabled ? styles.disabledButton : styles.button}
           aria-label="Get Integrations"
-          onClick={getFilteredIntegrations}
+          onClick={handleClickFilter}
         >
-          Refresh Integrations
+          Search
         </button>
+        <div>
+          {filteredIntegrations &&
+            filteredIntegrations.map((integration: IntegrationMetadata) => (
+              <div className={styles.row} key={uuidv4()}>
+                <div className={styles.card} key={uuidv4()}>
+                  <h3>{integration.name}</h3>
+                  <p>{integration.description}</p>
+                  <a href={integration.url} target="_blank" rel="noreferrer">
+                    {integration.url}
+                  </a>
+                  <div className={styles.row}>
+                    <input
+                      type="checkbox"
+                      checked={integration.active}
+                      disabled
+                    />
+                    <label>Active</label>
+                  </div>
+                  <button
+                    className={styles.button}
+                    onClick={() => toggleActive(integration.id)}
+                  >
+                    Toggle Inactive
+                  </button>
+                </div>
+              </div>
+            ))}
+        </div>
       </div>
       <hr />
       <div className={styles.row}>
         <button
           className={styles.button}
           aria-label="Filter Integrations"
-          onClick={e => handleClickFilter(e)}
+          onClick={getFilteredIntegrations}
         >
-          Click to load integrations
+          Refresh Integrations
         </button>
       </div>
       <div className={styles.column}>
@@ -94,11 +140,15 @@ export const Integrations = () => {
               <a href={integration.url} target="_blank" rel="noreferrer">
                 {integration.url}
               </a>
+              <div className={styles.row}>
+                <input type="checkbox" checked={integration.active} disabled />
+                <label>Active</label>
+              </div>
               <button
                 className={styles.button}
-                onClick={() => processInactive(integration.id)}
+                onClick={() => toggleActive(integration.id)}
               >
-                Set Inactive
+                Toggle Inactive
               </button>
             </div>
           </div>

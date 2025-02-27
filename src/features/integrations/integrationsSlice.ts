@@ -1,11 +1,17 @@
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { createAppSlice } from "../../app/createAppSlice"
-import { fetchIntegrations, setIntegrationToInactive } from "./integrationsAPI"
+import {
+  fetchIntegrationById,
+  fetchIntegrations,
+  filterIntegrationByName,
+  toggleActiveStatus,
+} from "./integrationsAPI"
 
 export type IntegrationMetadata = {
   id: number
   name: string
   description: string
+  active: boolean
   url: string
 }
 
@@ -37,9 +43,10 @@ export const integrationsSlice = createAppSlice({
     // will call the thunk with the `dispatch` function as the first argument. Async
     // code can then be executed and other actions can be dispatched. Thunks are
     // typically used to make async requests.
-    setIntegrationToInactiveAsync: create.asyncThunk(
+    toggleActiveStatusAsync: create.asyncThunk(
       async (id: number) => {
-        const response = await setIntegrationToInactive(id)
+        const item = await fetchIntegrationById(id)
+        const response = await toggleActiveStatus(id, !item?.active)
 
         return response
       },
@@ -76,6 +83,29 @@ export const integrationsSlice = createAppSlice({
         },
       },
     ),
+    filterByName: create.asyncThunk(
+      async (name: string) => {
+        if (name.length < 1) {
+          return []
+        }
+        const response = await filterIntegrationByName(name)
+        console.log("🚀 ~ response:", response)
+        // The value we return becomes the `fulfilled` action payload
+        return response
+      },
+      {
+        pending: state => {
+          state.status = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.status = "idle"
+          state.value = action.payload
+        },
+        rejected: state => {
+          state.status = "failed"
+        },
+      },
+    ),
   }),
   // You can define your selectors here. These selectors receive the slice
   // state as their first argument.
@@ -89,7 +119,8 @@ export const integrationsSlice = createAppSlice({
 export const {
   updateMetadata,
   getIntegrationsAsync,
-  setIntegrationToInactiveAsync,
+  toggleActiveStatusAsync,
+  filterByName,
 } = integrationsSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.
