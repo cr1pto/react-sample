@@ -1,17 +1,19 @@
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { createAppSlice } from "../../app/createAppSlice"
 import {
+  addIntegration,
   fetchIntegrationById,
   fetchIntegrations,
   filterIntegrationByName,
   toggleActiveStatus,
 } from "./integrationsAPI"
 
-export type IntegrationMetadata = {
-  id: number
+export interface IntegrationMetadata {
+  id: number | undefined
   name: string
   description: string
   active: boolean
+  logo: string
   url: string
 }
 
@@ -38,15 +40,9 @@ export const integrationsSlice = createAppSlice({
         state.value = action.payload
       },
     ),
-    // The function below is called a thunk and allows us to perform async logic. It
-    // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
-    // will call the thunk with the `dispatch` function as the first argument. Async
-    // code can then be executed and other actions can be dispatched. Thunks are
-    // typically used to make async requests.
-    toggleActiveStatusAsync: create.asyncThunk(
+    getIntegrationByIdAsync: create.asyncThunk(
       async (id: number) => {
-        const item = await fetchIntegrationById(id)
-        const response = await toggleActiveStatus(id, !item?.active)
+        const response: IntegrationMetadata = await fetchIntegrationById(id)
 
         return response
       },
@@ -56,7 +52,49 @@ export const integrationsSlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           state.status = "idle"
-          state.value = action.payload
+          state.value = [...state.value, action.payload]
+        },
+        rejected: state => {
+          state.status = "failed"
+        },
+      },
+    ),
+    addNewIntegration: create.asyncThunk(
+      async (item: IntegrationMetadata) => {
+        const response: IntegrationMetadata = await addIntegration(item)
+
+        return response
+      },
+      {
+        pending: state => {
+          state.status = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.status = "idle"
+          state.value = [...state.value, action.payload]
+        },
+        rejected: state => {
+          state.status = "failed"
+        },
+      },
+    ),
+    toggleActiveStatusAsync: create.asyncThunk(
+      async (id: number) => {
+        const item = await fetchIntegrationById(id)
+        const response: IntegrationMetadata = await toggleActiveStatus(
+          id,
+          !item?.active,
+        )
+
+        return response
+      },
+      {
+        pending: state => {
+          state.status = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.status = "idle"
+          state.value = [...state.value, action.payload]
         },
         rejected: state => {
           state.status = "failed"
@@ -65,9 +103,8 @@ export const integrationsSlice = createAppSlice({
     ),
     getIntegrationsAsync: create.asyncThunk(
       async () => {
-        const response = await fetchIntegrations()
-        console.log("🚀 ~ response:", response)
-        // The value we return becomes the `fulfilled` action payload
+        const response: IntegrationMetadata[] = await fetchIntegrations()
+
         return response
       },
       {
@@ -117,9 +154,11 @@ export const integrationsSlice = createAppSlice({
 
 // Action creators are generated for each case reducer function.
 export const {
+  addNewIntegration,
   updateMetadata,
-  getIntegrationsAsync,
+  getIntegrationByIdAsync,
   toggleActiveStatusAsync,
+  getIntegrationsAsync,
   filterByName,
 } = integrationsSlice.actions
 

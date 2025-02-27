@@ -11,41 +11,32 @@ import {
   toggleActiveStatusAsync,
   updateMetadata,
 } from "./integrationsSlice"
+import { IntegrationDetail } from "../integrationDetails/integrationDetails"
+import { AddIntegrationForm } from "../integrationForm/IntegrationForm"
 
 export const Integrations = () => {
   const dispatch = useAppDispatch()
   const integrations = useAppSelector(selectIntegrations)
-  const [integrationResults, setIntegrationResults] = useState([])
-  const [filteredIntegrations, setFilteredIntegrations] = useState([])
+  const [integrationResults, setIntegrationResults] = useState(integrations)
+  const [filteredIntegrations, setFilteredIntegrations] = useState(integrations)
   const [isSearchDisabled, setIsSearchDisabled] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
 
-  useEffect(() => {
-    getFilteredIntegrations()
-    let done = false
-    return () => {
-      done = true
-      return
-    }
-  }, [dispatch])
-
   async function getFilteredIntegrations() {
     const response = await dispatch(getIntegrationsAsync())
-    setIntegrationResults(response.payload)
+    console.log(response)
+    setIntegrationResults(response.payload as IntegrationMetadata[])
   }
   async function toggleActive(id: number) {
     const response = await dispatch(toggleActiveStatusAsync(id))
     console.log("🚀 ~ processInactive ~ response:", response)
     await getFilteredIntegrations()
-    // updateMetadata(response.payload)
-    // setFilteredIntegrations(response.payload)
   }
 
   async function handleOnChange(event: ChangeEvent<HTMLInputElement>) {
     setSearchTerm(event.target.value)
     setTimeout(() => {
       setIsSearchDisabled(searchTerm?.trim().length < 1)
-      // console.log("🚀 ~ e.key:", searchTerm)
     }, 250)
   }
 
@@ -68,6 +59,9 @@ export const Integrations = () => {
     <div className={styles.container}>
       <h1>Integrations</h1>
       <div className={styles.row}>
+        <div>
+          <AddIntegrationForm />
+        </div>
         <div>
           <h2>Search for an integration</h2>
           <div>
@@ -95,29 +89,7 @@ export const Integrations = () => {
         <div>
           {filteredIntegrations &&
             filteredIntegrations.map((integration: IntegrationMetadata) => (
-              <div className={styles.row} key={uuidv4()}>
-                <div className={styles.card} key={uuidv4()}>
-                  <h3>{integration.name}</h3>
-                  <p>{integration.description}</p>
-                  <a href={integration.url} target="_blank" rel="noreferrer">
-                    {integration.url}
-                  </a>
-                  <div className={styles.row}>
-                    <input
-                      type="checkbox"
-                      checked={integration.active}
-                      disabled
-                    />
-                    <label>Active</label>
-                  </div>
-                  <button
-                    className={styles.button}
-                    onClick={() => toggleActive(integration.id)}
-                  >
-                    Toggle Inactive
-                  </button>
-                </div>
-              </div>
+              <IntegrationDetail data={integration} key={uuidv4()} />
             ))}
         </div>
       </div>
@@ -133,25 +105,7 @@ export const Integrations = () => {
       </div>
       <div className={styles.column}>
         {integrationResults.map((integration: IntegrationMetadata) => (
-          <div className={styles.row} key={uuidv4()}>
-            <div className={styles.card} key={uuidv4()}>
-              <h3>{integration.name}</h3>
-              <p>{integration.description}</p>
-              <a href={integration.url} target="_blank" rel="noreferrer">
-                {integration.url}
-              </a>
-              <div className={styles.row}>
-                <input type="checkbox" checked={integration.active} disabled />
-                <label>Active</label>
-              </div>
-              <button
-                className={styles.button}
-                onClick={() => toggleActive(integration.id)}
-              >
-                Toggle Inactive
-              </button>
-            </div>
-          </div>
+          <IntegrationDetail data={integration} key={uuidv4()} />
         ))}
       </div>
     </div>

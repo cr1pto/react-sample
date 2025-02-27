@@ -1,0 +1,155 @@
+input {
+  font-size: 1rem;
+  padding: 2px;
+  width: 100%;
+  height: 30px;
+  text-align: center;
+  margin-right: 4px;
+}
+
+form {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.column {
+  display: block;
+  align-items: start;
+  width: 100%;
+  min-width: 1200px;
+  height: 100%;
+  min-height: 1200px;
+}
+.row {
+  display: inline-block;
+}
+
+button {
+  height: 3rem;
+  width: 8rem;
+}
+
+button > ::content {
+  font-size: 1rem;
+}
+
+.row > button {
+  margin: 0.5rem;
+}
+
+.row:not(:last-child) {
+  margin-bottom: 16px;
+}
+
+.value {
+  font-size: 78px;
+  padding-left: 16px;
+  padding-right: 16px;
+  margin-top: 2px;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.button {
+  appearance: none;
+  background: none;
+  font-size: 1rem;
+  width: 200px;
+  height: 50px;
+  padding-left: 12px;
+  padding-right: 12px;
+  margin: 2px;
+  outline: none;
+  border: 2px solid transparent;
+  color: rgb(0, 0, 0);
+  padding-bottom: 4px;
+  cursor: pointer;
+  background-color: rgba(50, 76, 150, 0.1);
+  border-radius: 2px;
+  transition: all 0.15s;
+}
+
+.disabledButton {
+  composes: button;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.3);
+  cursor: not-allowed;
+}
+
+.input {
+  font-size: 1rem;
+  padding: 2px;
+  width: 175px;
+  height: 30px;
+  text-align: center;
+  margin-right: 4px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: gray;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  color: white;
+  margin: 16px;
+  /* width: 400px; */
+}
+
+.textbox {
+  font-size: 32px;
+  padding: 2px;
+  width: 64px;
+  text-align: center;
+  margin-right: 4px;
+}
+
+.button:hover,
+.button:focus {
+  border: 2px solid rgba(112, 76, 182, 0.4);
+}
+
+.button:active {
+  background-color: rgba(112, 76, 182, 0.2);
+}
+
+.asyncButton {
+  composes: button;
+  position: relative;
+}
+
+.asyncButton:after {
+  content: "";
+  background-color: rgba(112, 76, 182, 0.15);
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transition:
+    width 1s linear,
+    opacity 0.5s ease 1s;
+}
+
+.asyncButton:active:after {
+  width: 0%;
+  opacity: 1;
+  transition: 0s;
+}
+
+hr {
+  width: 100%;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin: 16px 0;
+}
