@@ -1,10 +1,34 @@
 import type { AppStore } from "../../app/store"
 import { makeStore } from "../../app/store"
-import type { IntegrationsSliceState } from "./integrationsSlice"
+import {
+  integrationsSlice,
+  type IntegrationsSliceState,
+} from "./integrationsSlice"
 
 interface LocalTestContext {
   store: AppStore
 }
+
+describe<LocalTestContext>("integrations reducer", it => {
+  beforeEach<LocalTestContext>(context => {
+    const initialState: IntegrationsSliceState = {
+      value: [],
+      status: "idle",
+    }
+    const store = makeStore({ integrations: initialState })
+
+    context.store = store
+  })
+
+  it("should handle initial state", () => {
+    expect(
+      integrationsSlice.reducer(undefined, { type: "unknown" }),
+    ).toStrictEqual({
+      value: [],
+      status: "idle",
+    })
+  })
+})
 
 // describe<LocalTestContext>("counter reducer", it => {
 //   beforeEach<LocalTestContext>(context => {
