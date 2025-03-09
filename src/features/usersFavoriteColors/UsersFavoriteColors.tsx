@@ -2,9 +2,8 @@ import type { ChangeEvent } from "react"
 import type React from "react"
 import { useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import styles from "./UsersFavoriteColors.module.css"
 import type { UserWithColorInfo } from "./usersFavoriteColorsSlice"
-import { addUser, selectColors, selectUsers } from "./usersFavoriteColorsSlice"
+import { addUser, selectColors } from "./usersFavoriteColorsSlice"
 import { Link } from "react-router"
 
 interface AddUserFavoriteColorFields extends HTMLFormControlsCollection {
@@ -20,15 +19,11 @@ export const UsersFavoriteColors = () => {
   const [userName, setUserName] = useState("")
   const colors = useAppSelector(selectColors)
   const [selectedColor, setSelectedColor] = useState(colors[0])
-  // const users = useAppSelector(selectUsers)
-  // console.log("🚀 ~ UsersFavoriteColors ~ users:", users)
-
   async function handleOnChange(event: ChangeEvent<HTMLInputElement>) {
     setUserName(event.target.value)
   }
 
   const handleSubmit = (e: React.FormEvent<AddUserFavoriteColorElements>) => {
-    console.log("🚀 ~ handleSubmit ~ e:", e)
     // Prevent server submission
     e.preventDefault()
 
@@ -39,7 +34,6 @@ export const UsersFavoriteColors = () => {
       favoriteColorName: elements.favoriteColorName.value,
       name: elements.user.value,
     }
-    console.log("🚀 ~ handleSubmit ~ addNewUserColor:", addNewUserColor)
     dispatch(addUser(addNewUserColor))
     setUserName("")
     setSelectedColor("")

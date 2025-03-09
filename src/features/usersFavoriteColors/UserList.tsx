@@ -8,10 +8,7 @@ import { v4 as uuidv4 } from "uuid"
 export const UserList = () => {
   const dispatch = useAppDispatch()
   const users = useAppSelector(selectUsers)
-  console.log("🚀 ~ UserList ~ users:", users)
-
   function getColor(user: UserWithColorInfo): string | undefined {
-    console.log("🚀 ~ getColor ~ user:", user)
     if (styles[user?.favoriteColorName?.toLocaleLowerCase()] === undefined) {
       return styles["default-color"]
     }
