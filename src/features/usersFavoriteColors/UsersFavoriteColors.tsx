@@ -49,17 +49,9 @@ export const UsersFavoriteColors = () => {
     setSelectedColor(selectedColor)
   }
 
-  function getColor(): string | undefined {
-    if (styles[selectedColor] === undefined) {
-      return styles.gray
-    }
-
-    return styles[selectedColor]
-  }
-
   return (
     <>
-      <div className={getColor()}>
+      <div>
         <h1>Add Color</h1>
 
         <form onSubmit={handleSubmit}>

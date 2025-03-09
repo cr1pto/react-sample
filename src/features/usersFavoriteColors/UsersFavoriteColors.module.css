@@ -2,6 +2,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
 }
 
 select,
@@ -28,6 +31,22 @@ button {
   height: 40px;
 }
 
+.end {
+  margin-top: 2rem;
+}
+
+.default-color,
+.red,
+.orange,
+.blue,
+.purple {
+  border: solid;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding-left: 25px;
+  min-width: 20rem;
+}
 .default-color {
   border-color: gray;
 }
@@ -46,4 +65,27 @@ button {
 
 .purple {
   border-color: purple;
+}
+
+.listItemContainer {
+  margin: 2rem;
+}
+
+.listItem {
+  /* border-style: solid; */
+  margin: 0 auto;
+}
+
+.listItemText {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.listItemButton {
+  width: 80px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
