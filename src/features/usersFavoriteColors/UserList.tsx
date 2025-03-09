@@ -1,3 +1,4 @@
+import { Link } from "react-router"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import styles from "./UsersFavoriteColors.module.css"
 import type { UserWithColorInfo } from "./usersFavoriteColorsSlice"
@@ -40,7 +41,7 @@ export const UserList = () => {
           })}
       </div>
       <div className={styles.end}>
-        <a href="/">Add New User With Color</a>
+        <Link to="/">Add New User With Color</Link>
       </div>
     </>
   )

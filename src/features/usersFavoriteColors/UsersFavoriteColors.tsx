@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import styles from "./UsersFavoriteColors.module.css"
 import type { UserWithColorInfo } from "./usersFavoriteColorsSlice"
 import { addUser, selectColors, selectUsers } from "./usersFavoriteColorsSlice"
+import { Link } from "react-router"
 
 interface AddUserFavoriteColorFields extends HTMLFormControlsCollection {
   user: HTMLInputElement
@@ -64,7 +65,7 @@ export const UsersFavoriteColors = () => {
           </select>
           <button>Submit</button>
         </form>
-        <a href="/userList">View User List</a>
+        <Link to="/userList">View User List</Link>
       </div>
     </>
   )
