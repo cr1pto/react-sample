@@ -126,7 +126,6 @@ export const integrationsSlice = createAppSlice({
           return []
         }
         const response = await filterIntegrationByName(name)
-        console.log("🚀 ~ response:", response)
         // The value we return becomes the `fulfilled` action payload
         return response
       },

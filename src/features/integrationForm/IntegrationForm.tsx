@@ -5,15 +5,6 @@ import {
   type IntegrationMetadata,
 } from "../integrations/integrationsSlice"
 
-//   {
-//     "id": 4,
-//     "name": "arjun.net",
-//     "description": "this is a Junctions test",
-//     "url": "https://bell.com",
-//     "logo": "http://placeimg.com/640/480/cats",
-//     "active": false
-// }
-
 interface AddIntegrationFormFields extends HTMLFormControlsCollection {
   name: HTMLInputElement
   url: HTMLInputElement

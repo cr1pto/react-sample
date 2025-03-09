@@ -1,0 +1,49 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+select,
+input,
+button {
+  font-size: 1rem;
+  padding: 2px;
+  text-align: center;
+  margin-right: 4px;
+  margin: 0.5rem auto;
+  width: 100%;
+}
+
+select {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  min-height: 39px;
+  min-width: 410px;
+}
+
+button {
+  min-width: 410px;
+  height: 40px;
+}
+
+.default-color {
+  border-color: gray;
+}
+
+.red {
+  border-color: red;
+}
+
+.orange {
+  border-color: orange;
+}
+
+.blue {
+  border-color: blue;
+}
+
+.purple {
+  border-color: purple;
+}

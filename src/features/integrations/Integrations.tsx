@@ -44,8 +44,7 @@ export const Integrations = () => {
     event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
   ) {
     const response = await dispatch(filterByName(searchTerm))
-    console.log("🚀 ~ Integrations ~ response:", response)
-    updateMetadata(response.payload)
+    dispatch(updateMetadata(response.payload))
     setFilteredIntegrations(response.payload)
   }
 
@@ -87,6 +86,9 @@ export const Integrations = () => {
           Search
         </button>
         <div>
+          <div>
+            <h3>Total Filtered Integrations: {filteredIntegrations.length}</h3>
+          </div>
           {filteredIntegrations &&
             filteredIntegrations.map((integration: IntegrationMetadata) => (
               <IntegrationDetail data={integration} key={uuidv4()} />
@@ -102,6 +104,9 @@ export const Integrations = () => {
         >
           Refresh Integrations
         </button>
+      </div>
+      <div>
+        <h3>Total Integrations: {integrationResults.length}</h3>
       </div>
       <div className={styles.column}>
         {integrationResults.map((integration: IntegrationMetadata) => (
